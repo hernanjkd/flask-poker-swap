@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
@@ -13,6 +13,7 @@ class User(db.Model):
         return f'<Person {self.username}>'
 
     def serialize(self, admin=False):
+
         if admin:
             return {
                 "id": self.id,
@@ -33,7 +34,7 @@ class Login(db.Model):
         return f'<Login {self.email}>'
 
 
-class Tournament(db.Model):
+class Tournaments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     players = db.Column(db.Integer)
@@ -43,6 +44,10 @@ class Tournament(db.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.name,
             "players": self.players
         }
+
+
+class Swaps(db.Model):

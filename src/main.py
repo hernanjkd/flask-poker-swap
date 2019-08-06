@@ -6,7 +6,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from flask_jwt_simple import JWTManager, jwt_required, create_jwt, get_jwt_identity
 from utils import APIException, generate_sitemap
-from models import db, User, Login, Tournament
+from models import db, Users, Login, Tournaments, Swaps
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -31,8 +31,7 @@ def sitemap():
 #############################################################################
 
 @app.route('/login', methods=['POST'])
-def login_user():
-
+def login():
     body = request.get_json()
 
     if body is None:
@@ -52,17 +51,24 @@ def login_user():
 @app.route('/user', methods=['POST', 'GET'])
 def handle_user():
 
-    # POST request
+    # Register User
     if request.method == 'POST':
         body = request.get_json()
 
         if body is None:
             raise APIException("You need to specify the request body as a json object", status_code=400)
+        if 'first_name' not in body:
+            raise APIException('You need to specify the first_name', status_code=400)
+        if 'last_name' not in body:
+            raise APIException('You need to specify the last_name', status_code=400)
         if 'email' not in body:
             raise APIException('You need to specify the email', status_code=400)
         if 'password' not in body:
             raise APIException('You need to specify the username', status_code=400)
 
+        obj = Users(first_name=body['first_name'], last_name=body['last_name'])
+        db.session.add(obj)
+        db.session.commit()
         obj = Login(email=body['email'], password=body['password'])
         db.session.add(obj)
         db.session.commit()
@@ -70,7 +76,7 @@ def handle_user():
 
     # GET request
     if request.method == 'GET':
-        all_users = User.query.all()
+        all_users = Users.query.all()
         all_users = list(map(lambda x: x.serialize(), all_users))
         return jsonify(all_users), 200
 
