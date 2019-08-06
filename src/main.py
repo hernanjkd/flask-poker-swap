@@ -1,6 +1,4 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
+
 import os
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
@@ -18,6 +16,10 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 
+app.config['JWT_SECRET_KEY'] = '230130905682186130'
+jwt = JWTManager(app)
+
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
@@ -26,7 +28,28 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/login', methods=['POST', 'GET'])
+#############################################################################
+
+@app.route('/login', methods=['POST'])
+def login_user():
+
+    body = request.get_json()
+
+    if body is None:
+        raise APIException("You need to specify the request body as a json object", status_code=400)
+    if 'email' not in body:
+        raise APIException('You need to specify the email', status_code=400)
+    if 'password' not in body:
+        raise APIException('You need to specify the username', status_code=400)
+
+    obj = Login(email=body['email'], password=body['password'])
+    db.session.add(obj)
+    db.session.commit()
+    return "ok", 200
+
+#############################################################################
+
+@app.route('/user', methods=['POST', 'GET'])
 def handle_user():
 
     # POST request
@@ -35,13 +58,13 @@ def handle_user():
 
         if body is None:
             raise APIException("You need to specify the request body as a json object", status_code=400)
-        if 'username' not in body:
-            raise APIException('You need to specify the username', status_code=400)
         if 'email' not in body:
             raise APIException('You need to specify the email', status_code=400)
+        if 'password' not in body:
+            raise APIException('You need to specify the username', status_code=400)
 
-        user1 = Login(username=body['username'], email=body['email'])
-        db.session.add(user1)
+        obj = Login(email=body['email'], password=body['password'])
+        db.session.add(obj)
         db.session.commit()
         return "ok", 200
 
@@ -66,31 +89,31 @@ def get_single_user(user_id):
         if body is None:
             raise APIException("You need to specify the request body as a json object", status_code=400)
 
-        user1 = user.query.get(user_id)
-        if user1 is None:
+        obj = user.query.get(user_id)
+        if obj is None:
             raise APIException('User not found', status_code=404)
 
         if "username" in body:
-            user1.username = body["username"]
+            obj.username = body["username"]
         if "email" in body:
-            user1.email = body["email"]
+            obj.email = body["email"]
         db.session.commit()
 
-        return jsonify(user1.serialize()), 200
+        return jsonify(obj.serialize()), 200
 
     # GET request
     if request.method == 'GET':
-        user1 = user.query.get(user_id)
-        if user1 is None:
+        obj = User.query.get(user_id)
+        if obj is None:
             raise APIException('User not found', status_code=404)
-        return jsonify(user1.serialize()), 200
+        return jsonify(obj.serialize()), 200
 
     # DELETE request
     if request.method == 'DELETE':
-        user1 = user.query.get(user_id)
-        if user1 is None:
+        obj = user.query.get(user_id)
+        if obj is None:
             raise APIException('User not found', status_code=404)
-        db.session.delete(user1)
+        db.session.delete(obj)
         db.session.commit()
         return "ok", 200
 
