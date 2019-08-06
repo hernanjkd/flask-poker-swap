@@ -7,18 +7,20 @@ class Users(db.Model):
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     login = db.relationship('Login', lazy=True)
-    tournament = db.relationship('Tournament', lazy=True)
+    tournaments = db.relationship('Tournaments', lazy=True)
+    swaps = db.relationship('Swaps', lazy=True)
 
     def __repr__(self):
         return f'<Person {self.username}>'
 
     def serialize(self, admin=False):
-
         if admin:
             return {
                 "id": self.id,
                 "username": self.username,
-                "email": self.email
+                "email": self.email,
+                "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
+                "swaps": list(map(lambda e: e.serialize(), self.swaps))
             }
         return {
             "username": self.username
@@ -51,3 +53,5 @@ class Tournaments(db.Model):
 
 
 class Swaps(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    users = db.relationship('users')
