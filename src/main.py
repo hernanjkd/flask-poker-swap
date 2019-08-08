@@ -52,7 +52,7 @@ def login():
 #############################################################################
 
 @app.route('/register', methods=['POST'])
-def handle_user():
+def register_user():
 
     # Register User
     if request.method == 'POST':
@@ -73,7 +73,7 @@ def handle_user():
 
 
 @app.route('/user/<int:user_id>', methods=['PUT', 'GET', 'DELETE'])
-def get_single_user(user_id):
+def handle_user(user_id):
     """
     Single user
     """
