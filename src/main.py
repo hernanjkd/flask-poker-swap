@@ -41,9 +41,7 @@ def login():
     if 'password' not in body:
         raise APIException('You need to specify the username', status_code=400)
 
-    obj = Login(email=body['email'], password=body['password'])
-    db.session.add(obj)
-    db.session.commit()
+
     return "ok", 200
 
 #############################################################################

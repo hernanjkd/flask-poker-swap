@@ -20,6 +20,7 @@ class Users(db.Model):
             return {
                 "id": self.id,
                 "first_name": self.first_name,
+                "last_name": self.last_name,
                 "email": self.email,
                 "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
                 "swaps": list(map(lambda e: e.serialize(), self.swaps))
