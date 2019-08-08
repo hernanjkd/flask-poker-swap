@@ -6,6 +6,8 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(80), unique=True, nullable=False)
     login = db.relationship('Login', lazy=True)
     tournaments = db.relationship('Tournaments', lazy=True)
     swaps = db.relationship('Swaps', lazy=True)
@@ -17,7 +19,7 @@ class Users(db.Model):
         if admin:
             return {
                 "id": self.id,
-                "username": self.username,
+                "first_name": self.first_name,
                 "email": self.email,
                 "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
                 "swaps": list(map(lambda e: e.serialize(), self.swaps))
@@ -25,15 +27,6 @@ class Users(db.Model):
         return {
             "username": self.username
         }
-
-
-class Login(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'<Login {self.email}>'
 
 
 class Tournaments(db.Model):
