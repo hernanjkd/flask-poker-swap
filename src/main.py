@@ -44,9 +44,8 @@ def login():
     all_users = Users.query.all()
     for user in all_users:
         if user['email'] == body['email'] and user['password'] == body['password']
-
-        ret = {'jwt': create_jwt(identity=body['email'])}
-        return jsonify(ret), 200
+            ret = {'jwt': create_jwt(identity=body['email'])}
+            return jsonify(ret), 200
 
     return 'The log in information is incorrect', 404
 
@@ -65,7 +64,7 @@ def handle_user():
 
         obj = Users(first_name=body['first_name'], last_name=body['last_name'], 
                     email=body['email'], password=body['password'])
-                    
+
         db.session.add(obj)
         db.session.commit()
         return "ok", 200
