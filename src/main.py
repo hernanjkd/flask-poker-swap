@@ -41,8 +41,14 @@ def login():
     if 'password' not in body:
         raise APIException('You need to specify the username', status_code=400)
 
-    ret = {'jwt': create_jwt(identity=body['email'])}
-    return jsonify(ret), 200
+    all_users = Users.query.all()
+    for user in all_users:
+        if user['email'] == body['email'] and user['password'] == body['password']
+
+        ret = {'jwt': create_jwt(identity=body['email'])}
+        return jsonify(ret), 200
+
+    return 'The log in information is incorrect', 404
 
 #############################################################################
 
@@ -53,23 +59,13 @@ def handle_user():
     if request.method == 'POST':
         body = request.get_json()
 
-        # missing_item = verify_json(body)
-        # if missing_item:
-        #     raise APIException("You need to specify the " + missing_item, status_code=400)
-
-        if body is None:
-            raise APIException("You need to specify the request body as a json object", status_code=400)
-        if 'first_name' not in body:
-            raise APIException('You need to specify the first_name', status_code=400)
-        if 'last_name' not in body:
-            raise APIException('You need to specify the last_name', status_code=400)
-        if 'email' not in body:
-            raise APIException('You need to specify the email', status_code=400)
-        if 'password' not in body:
-            raise APIException('You need to specify the password', status_code=400)
+        missing_item = verify_json(body, 'first_name', 'last_name', 'email', 'password')
+        if missing_item:
+            raise APIException("You need to specify the " + missing_item, status_code=400)
 
         obj = Users(first_name=body['first_name'], last_name=body['last_name'], 
                     email=body['email'], password=body['password'])
+                    
         db.session.add(obj)
         db.session.commit()
         return "ok", 200
