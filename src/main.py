@@ -16,7 +16,7 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 
-app.config['JWT_SECRET_KEY'] = '230130905682186130'
+app.config['JWT_SECRET_KEY'] = '47fh38d3z2w8fhjks0wp9zm4ncmn36l7a8xgds'
 jwt = JWTManager(app)
 
 
@@ -41,9 +41,8 @@ def login():
     if 'password' not in body:
         raise APIException('You need to specify the username', status_code=400)
 
-    if 
-
-    return "ok", 200
+    ret = {'jwt': create_jwt(identity=body['email'])}
+    return jsonify(ret), 200
 
 #############################################################################
 
@@ -54,10 +53,9 @@ def handle_user():
     if request.method == 'POST':
         body = request.get_json()
 
-        missing_item = verify_json(body)
-
-        if missing_item:
-            raise APIException("You need to specify the " + missing_item, status_code=400)
+        # missing_item = verify_json(body)
+        # if missing_item:
+        #     raise APIException("You need to specify the " + missing_item, status_code=400)
 
         if body is None:
             raise APIException("You need to specify the request body as a json object", status_code=400)

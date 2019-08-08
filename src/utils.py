@@ -20,8 +20,8 @@ def has_no_empty_params(rule):
     arguments = rule.arguments if rule.arguments is not None else ()
     return len(defaults) >= len(arguments)
 
-def verify_json(obj):
-    
+# def verify_json(obj):
+#     return True
 
 def generate_sitemap(app):
     links = []
