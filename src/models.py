@@ -31,7 +31,7 @@ class Tournaments(db.Model):
     name = db.Column(db.String(120))
     status = db.Column(db.String(80)) # date that starts, in progress, finished
     results = db.Column(db.String(1000)) # 
-    scheduled_date = db.Column(db.)
+    schedule = db.Column(db.DateTime, default=datetime.utcnow)
     players = db.relationship('Users', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 
@@ -48,4 +48,7 @@ class Tournaments(db.Model):
 
 class Swaps(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    users = db.relationship('users')
+    amount_percentage = db.Column(db.Integer)
+    sender_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    reciever_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+    tournament_id = db.Column(db.Integer, db.ForeignKey('Tournaments.id'))
