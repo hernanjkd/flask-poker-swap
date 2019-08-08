@@ -10,7 +10,6 @@ class Users(db.Model):
     password = db.Column(db.String(80), unique=True, nullable=False)
     tournaments = db.relationship('Tournaments', lazy=True)
     swaps = db.relationship('Swaps', lazy=True)
-    tournament_id = db.Column(db.Integer, db.ForeignKey('Tournaments.id'))
 
     def __repr__(self):
         return f'<Person {self.email}>'
@@ -29,11 +28,10 @@ class Users(db.Model):
 class Tournaments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
-    status = db.Column(db.String(80)) # date that starts, in progress, finished
-    results = db.Column(db.String(1000)) # 
-    schedule = db.Column(db.DateTime, default=datetime.utcnow)
+    completed = db.Column(db.Boolean)
+    results = db.Column(db.String(1000))
+    schedule = db.Column(db.DateTime)
     players = db.relationship('Users', lazy=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 
     def __repr__(self):
         return f'<Tournament {self.name}>'
@@ -49,6 +47,10 @@ class Tournaments(db.Model):
 class Swaps(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount_percentage = db.Column(db.Integer)
+    status = db.Column()
     sender_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     reciever_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
     tournament_id = db.Column(db.Integer, db.ForeignKey('Tournaments.id'))
+
+
+class 
