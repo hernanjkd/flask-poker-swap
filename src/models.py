@@ -8,8 +8,10 @@ class Users(db.Model):
     last_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
+    tokens = db.Column(db.Integer, default=0)
     tournaments = db.relationship('Tournaments', lazy=True)
     swaps = db.relationship('Swaps', lazy=True)
+    token_transactions = db.relationship('Token_Transactions', lazy=True)
 
     def __repr__(self):
         return f'<Person {self.email}>'
@@ -21,7 +23,9 @@ class Users(db.Model):
             "last_name": self.last_name,
             "email": self.email,
             "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
-            "swaps": list(map(lambda e: e.serialize(), self.swaps))
+            "swaps": list(map(lambda e: e.serialize(), self.swaps)),
+            "tokens": self.tokens
+            # "token_transactions": list(map(lambda e: e.serialize(), self.token_transactions))
         }
 
 
@@ -53,4 +57,7 @@ class Swaps(db.Model):
     tournament_id = db.Column(db.Integer, db.ForeignKey('Tournaments.id'))
 
 
-class 
+class Token_Transactions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
