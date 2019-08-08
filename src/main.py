@@ -32,26 +32,26 @@ def sitemap():
 
 @app.route('/login', methods=['POST'])
 def login():
+    if request.method != 'POST':
+        return 'Invalid method', 404
+
     body = request.get_json()
 
-    if body is None:
-        raise APIException("You need to specify the request body as a json object", status_code=400)
-    if 'email' not in body:
-        raise APIException('You need to specify the email', status_code=400)
-    if 'password' not in body:
-        raise APIException('You need to specify the username', status_code=400)
+    missing_item = verify_json(body, 'email', 'password')
+    if missing_item:
+        raise APIException('You need to specify the ' + missing_item, status_code=400)
 
     all_users = Users.query.all()
     for user in all_users:
-        if user['email'] == body['email'] and user['password'] == body['password']
+        if user['email'] == body['email'] and user['password'] == hash(body['password']):
             ret = {'jwt': create_jwt(identity=body['email'])}
             return jsonify(ret), 200
 
-    return 'The log in information is incorrect', 404
+    return 'The log in information is incorrect', 401
 
 #############################################################################
 
-@app.route('/user', methods=['POST', 'GET'])
+@app.route('/register', methods=['POST'])
 def handle_user():
 
     # Register User
@@ -63,17 +63,11 @@ def handle_user():
             raise APIException("You need to specify the " + missing_item, status_code=400)
 
         obj = Users(first_name=body['first_name'], last_name=body['last_name'], 
-                    email=body['email'], password=body['password'])
+                    email=body['email'], password=hash(body['password'])
 
         db.session.add(obj)
         db.session.commit()
         return "ok", 200
-
-    # GET request
-    if request.method == 'GET':
-        all_users = Users.query.all()
-        all_users = list(map(lambda x: x.serialize(), all_users))
-        return jsonify(all_users), 200
 
     return "Invalid Method", 404
 

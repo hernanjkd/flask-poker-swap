@@ -24,7 +24,7 @@ def verify_json(body, *args):
     if body is None:
         return 'request body as an json object'
     for prop in args:
-        if prop not in body
+        if prop not in body:
             return prop
     return None
 
