@@ -13,20 +13,16 @@ class Users(db.Model):
     swaps = db.relationship('Swaps', lazy=True)
 
     def __repr__(self):
-        return f'<Person {self.username}>'
+        return f'<Person {self.email}>'
 
-    def serialize(self, admin=False):
-        if admin:
-            return {
-                "id": self.id,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "email": self.email,
-                "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
-                "swaps": list(map(lambda e: e.serialize(), self.swaps))
-            }
+    def serialize(self):
         return {
-            "username": self.username
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
+            "swaps": list(map(lambda e: e.serialize(), self.swaps))
         }
 
 
