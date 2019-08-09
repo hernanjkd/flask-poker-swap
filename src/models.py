@@ -12,7 +12,7 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
     tokens = db.Column(db.Integer, default=0)
-    date_created = db.Column(db.DateTime, oncreate=func.utc_timestamp())
+    date_created = db.Column(db.DateTime, oncreate=func.now())
     date_update = db.Column(db.DateTime, onupdate=func.utc_timestamp())
 
     tournaments = db.relationship('Tournaments', lazy=True)
