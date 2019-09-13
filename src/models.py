@@ -6,8 +6,8 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime, oncreate=func.now())
-    last_modified = db.Column(db.DateTime, onupdate=func.utc_timestamp())
+    date_created = db.Column(db.DateTime, oncreate=datetime.datetime.now())
+    last_modified = db.Column(db.DateTime, onupdate=datetime.datetime.now())
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
