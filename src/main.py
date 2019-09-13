@@ -50,7 +50,7 @@ def login():
     return 'The log in information is incorrect', 401
 
 
-@app.route('/users/<int:id>', methods=['GET','POST','PUT'])
+@app.route('/users', methods=['GET','POST','PUT'])
 def user():
     
     if request.method == 'POST':
