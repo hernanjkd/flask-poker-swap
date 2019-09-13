@@ -6,7 +6,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from flask_jwt_simple import JWTManager, jwt_required, create_jwt, get_jwt_identity
 from utils import APIException, generate_sitemap, verify_json
-from models import db, Users, Login, Tournaments, Swaps
+from models import db, Users
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
