@@ -49,6 +49,27 @@ def login():
 
     return 'The log in information is incorrect', 401
 
+
+@app.route('/users/<int:id>', methods=['GET','POST','PUT'])
+def user():
+    
+    if request.method == 'POST':
+        body = request.get_json()
+        user = Users(number=request.get_json()['number'])
+        
+        db.session.add(user)
+        db.session.commit()
+
+    if request.method == 'PUT':
+        user = Users.query.get(id)
+        user.number = request.get_json()['number']
+        
+        db.session.commit()
+
+    users = Users.query.all()
+    users = list(map(lambda x: x.serialize, users))
+    return jsonify(users)
+
 #############################################################################
 
 # @app.route('/register', methods=['POST'])
