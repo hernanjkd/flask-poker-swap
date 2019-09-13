@@ -51,68 +51,68 @@ def login():
 
 #############################################################################
 
-@app.route('/register', methods=['POST'])
-def register_user():
+# @app.route('/register', methods=['POST'])
+# def register_user():
 
-    # Register User
-    if request.method == 'POST':
-        body = request.get_json()
+#     # Register User
+#     if request.method == 'POST':
+#         body = request.get_json()
 
-        missing_item = verify_json(body, 'first_name', 'last_name', 'email', 'password')
-        if missing_item:
-            raise APIException("You need to specify the " + missing_item, status_code=400)
+#         missing_item = verify_json(body, 'first_name', 'last_name', 'email', 'password')
+#         if missing_item:
+#             raise APIException("You need to specify the " + missing_item, status_code=400)
 
-        obj = Users(first_name=body['first_name'], last_name=body['last_name'], 
-                    email=body['email'], password=hash(body['password'])
+#         obj = Users(first_name=body['first_name'], last_name=body['last_name'], 
+#                     email=body['email'], password=hash(body['password'])
 
-        db.session.add(obj)
-        db.session.commit()
-        return "ok", 200
+#         db.session.add(obj)
+#         db.session.commit()
+#         return "ok", 200
 
-    return "Invalid Method", 404
+#     return "Invalid Method", 404
 
 
-@app.route('/user/<int:user_id>', methods=['PUT', 'GET', 'DELETE'])
-def handle_user(user_id):
-    """
-    Single user
-    """
+# @app.route('/user/<int:user_id>', methods=['PUT', 'GET', 'DELETE'])
+# def handle_user(user_id):
+#     """
+#     Single user
+#     """
 
-    # PUT request
-    if request.method == 'PUT':
-        body = request.get_json()
-        if body is None:
-            raise APIException("You need to specify the request body as a json object", status_code=400)
+#     # PUT request
+#     if request.method == 'PUT':
+#         body = request.get_json()
+#         if body is None:
+#             raise APIException("You need to specify the request body as a json object", status_code=400)
 
-        obj = user.query.get(user_id)
-        if obj is None:
-            raise APIException('User not found', status_code=404)
+#         obj = user.query.get(user_id)
+#         if obj is None:
+#             raise APIException('User not found', status_code=404)
 
-        if "username" in body:
-            obj.username = body["username"]
-        if "email" in body:
-            obj.email = body["email"]
-        db.session.commit()
+#         if "username" in body:
+#             obj.username = body["username"]
+#         if "email" in body:
+#             obj.email = body["email"]
+#         db.session.commit()
 
-        return jsonify(obj.serialize()), 200
+#         return jsonify(obj.serialize()), 200
 
-    # GET request
-    if request.method == 'GET':
-        obj = User.query.get(user_id)
-        if obj is None:
-            raise APIException('User not found', status_code=404)
-        return jsonify(obj.serialize()), 200
+#     # GET request
+#     if request.method == 'GET':
+#         obj = User.query.get(user_id)
+#         if obj is None:
+#             raise APIException('User not found', status_code=404)
+#         return jsonify(obj.serialize()), 200
 
-    # DELETE request
-    if request.method == 'DELETE':
-        obj = user.query.get(user_id)
-        if obj is None:
-            raise APIException('User not found', status_code=404)
-        db.session.delete(obj)
-        db.session.commit()
-        return "ok", 200
+#     # DELETE request
+#     if request.method == 'DELETE':
+#         obj = user.query.get(user_id)
+#         if obj is None:
+#             raise APIException('User not found', status_code=404)
+#         db.session.delete(obj)
+#         db.session.commit()
+#         return "ok", 200
 
-    return "Invalid Method", 404
+#     return "Invalid Method", 404
 
 
 if __name__ == '__main__':

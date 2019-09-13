@@ -6,14 +6,14 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, oncreate=func.now())
+    last_modified = db.Column(db.DateTime, onupdate=func.utc_timestamp())
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
     tokens = db.Column(db.Integer, default=0)
-    date_created = db.Column(db.DateTime, oncreate=func.now())
-    date_update = db.Column(db.DateTime, onupdate=func.utc_timestamp())
 
     tournaments = db.relationship('Tournaments', lazy=True)
     swaps = db.relationship('Swaps', lazy=True)
@@ -37,6 +37,8 @@ class Users(db.Model):
 
 class Tournaments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, oncreate=datetime.datetime.now())
+    last_modified = db.Column(db.DateTime, onupdate=func.utc_timestamp())
 
     name = db.Column(db.String(120))
     results = db.Column(db.String(1000))
