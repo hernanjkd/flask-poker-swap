@@ -5,7 +5,7 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.Date, default=datetime.now())
+    date_created = db.Column(db.Date, default=datetime.now)
     last_modified = db.Column(db.Date, onupdate=datetime.now())
     number = db.Column(db.Integer)
 

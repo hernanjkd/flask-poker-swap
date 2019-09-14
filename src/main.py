@@ -53,12 +53,8 @@ def login():
 @app.route('/users', methods=['GET','POST','PUT'])
 def user():
     
-    if request.method == 'POST':
-        body = request.get_json()
-        user = Users(number=request.get_json()['number'])
-        
-        db.session.add(user)
-        db.session.commit()
+    db.session.add(Users(number=4))
+    db.session.commit()
 
     if request.method == 'PUT':
         user = Users.query.get(id)
@@ -67,7 +63,7 @@ def user():
         db.session.commit()
 
     users = Users.query.all()
-    users = list(map(lambda x: x.serialize, users))
+    users = list(map(lambda x: x.serialize(), users))
     return jsonify(users)
 
 #############################################################################
