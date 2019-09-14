@@ -53,8 +53,15 @@ def login():
 @app.route('/users', methods=['GET','POST','PUT'])
 def user():
     
-    db.session.add(Users(number=4))
-    db.session.commit()
+    # db.session.add(Users(
+    #     email = "someuo498@gmail.com",
+    #     password = hash("super secret password")
+    # ))
+    # db.session.add(Profiles(
+    #     first_name = "San Martin",
+    #     last_name = "Olivar",
+    # ))
+    # db.session.commit()
 
     if request.method == 'PUT':
         user = Users.query.get(id)
