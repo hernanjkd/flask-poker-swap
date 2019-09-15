@@ -13,8 +13,6 @@ class Users(db.Model):
     password = db.Column(db.String(80), unique=True, nullable=False)
 
     # profile = db.relationship('Profiles', lazy=True, uselist=False, backref='user_id')
-    profile = db.relationship('Profiles', back_populates='user')
-    # profile_id = db.Column(db.Integer, db.ForeignKey('Profiles.id'))
 
     def serialize(self):
         return {
@@ -33,7 +31,9 @@ class Profiles(db.Model):
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
 
-    user = db.relationship('Users', back_populates='profile')
+    user = db.relationship('Users', backref='profile')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
     # email = db.Column(db.String(80), db.ForeignKey('Users.email'))
     # tournaments = db.relationship('Tournaments', lazy=True)
     # swaps = db.relationship('Swaps', lazy=True)
@@ -45,7 +45,7 @@ class Profiles(db.Model):
             "date_created": self.date_created,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "email": self.email
+            "email": self.user_id
             # "tokens": self.tokens,
             # "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
             # "swaps": list(map(lambda e: e.serialize(), self.swaps))
