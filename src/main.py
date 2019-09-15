@@ -30,24 +30,24 @@ def sitemap():
 
 #############################################################################
 
-# @app.route('/login', methods=['POST'])
-# def login():
-#     if request.method != 'POST':
-#         return 'Invalid method', 404
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method != 'POST':
+        return 'Invalid method', 404
 
-#     body = request.get_json()
+    body = request.get_json()
 
-#     missing_item = verify_json(body, 'email', 'password')
-#     if missing_item:
-#         raise APIException('You need to specify the ' + missing_item, status_code=400)
+    missing_item = verify_json(body, 'email', 'password')
+    if missing_item:
+        raise APIException('You need to specify the ' + missing_item, status_code=400)
 
-#     all_users = Users.query.all()
-#     for user in all_users:
-#         if user['email'] == body['email'] and user['password'] == hash(body['password']):
-#             ret = {'jwt': create_jwt(identity=body['email'])}
-#             return jsonify(ret), 200
+    all_users = Users.query.all()
+    for user in all_users:
+        if user['email'] == body['email'] and user['password'] == hash(body['password']):
+            ret = {'jwt': create_jwt(identity=body['email'])}
+            return jsonify(ret), 200
 
-#     return 'The log in information is incorrect', 401
+    return 'The log in information is incorrect', 401
 
 
 @app.route('/users', methods=['GET','POST','PUT'])
