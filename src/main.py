@@ -69,6 +69,8 @@ def user():
         
         db.session.commit()
 
+    
+
     prof = Profiles.query.all()
     prof = list(map(lambda x: x.serialize(), prof))
     users = Users.query.all()
