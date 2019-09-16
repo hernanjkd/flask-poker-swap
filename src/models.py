@@ -7,12 +7,11 @@ class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.Date, default=datetime.now())
-    # last_modified = db.Column(db.Date, onupdate=datetime.now())
     
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
 
-    # profile = db.relationship('Profiles', lazy=True, uselist=False, backref='user_id')
+    profile = db.relationship('Profiles', backref='user', uselist=False)
 
     def serialize(self):
         return {
@@ -25,31 +24,19 @@ class Users(db.Model):
 
 class Profiles(db.Model):
     __tablename__ = 'profiles'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     date_created = db.Column(db.DateTime, default=datetime.now)
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
-
-    user = db.relationship('Users', backref='profile')
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
-    # email = db.Column(db.String(80), db.ForeignKey('Users.email'))
-    # tournaments = db.relationship('Tournaments', lazy=True)
-    # swaps = db.relationship('Swaps', lazy=True)
-    # token_transactions = db.relationship('Token_Transactions', lazy=True)
-
     def serialize(self):
         return {
             "id": self.id,
             "date_created": self.date_created,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "email": self.user_id
-            # "tokens": self.tokens,
-            # "tournaments": list(map(lambda e: e.serialize(), self.tournaments)),
-            # "swaps": list(map(lambda e: e.serialize(), self.swaps))
-            # "token_transactions": list(map(lambda e: e.serialize(), self.token_transactions))
+            "email": self.user.email
         }
     
 
