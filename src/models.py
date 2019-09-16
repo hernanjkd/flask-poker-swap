@@ -11,7 +11,7 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
 
-    profile = db.relationship('Profiles', backref='user', uselist=False)
+    profile = db.relationship('Profiles', back_populates='user', uselist=False)
 
     def serialize(self):
         return {
@@ -29,6 +29,8 @@ class Profiles(db.Model):
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
+
+    user = db.relationship('Users', back_populates='profile', uselist=False)
     
     def serialize(self):
         return {

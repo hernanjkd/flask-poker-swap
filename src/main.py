@@ -53,15 +53,17 @@ def login():
 @app.route('/users', methods=['GET','POST','PUT'])
 def user():
     
-    # db.session.add(Users(
-    #     email = "someuo498@gmail.com",
-    #     password = hash("super secret password")
-    # ))
-    # db.session.add(Profiles(
-    #     first_name = "San Martin",
-    #     last_name = "Olivar",
-    # ))
-    # db.session.commit()
+    user = Users(
+        email = "ikelkwj32@gmail.com",
+        password = hash("super secret password")
+    )
+    db.session.add(user)
+    db.session.add(Profiles(
+        first_name = "Osvaldo",
+        last_name = "Ratata",
+        user = user
+    ))
+    db.session.commit()
 
     if request.method == 'PUT':
         user = Users.query.get(id)
@@ -73,9 +75,7 @@ def user():
 
     prof = Profiles.query.all()
     prof = list(map(lambda x: x.serialize(), prof))
-    users = Users.query.all()
-    users = list(map(lambda x: x.serialize(), users))
-    return jsonify(prof + users)
+    return jsonify(prof)
 
 
 #############################################################################
