@@ -11,8 +11,6 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
 
-    profile = db.relationship('Profiles', back_populates='user', uselist=False)
-
     def serialize(self):
         return {
             "id": self.id,
@@ -25,12 +23,12 @@ class Users(db.Model):
 class Profiles(db.Model):
     __tablename__ = 'profiles'
     id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    date_created = db.Column(db.DateTime, default=datetime.now)
+    date_created = db.Column(db.Date, default=datetime.now())
 
     first_name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(80), nullable=False)
 
-    user = db.relationship('Users', back_populates='profile', uselist=False)
+    user = db.relationship('Users', backref='profile', uselist=False)
     
     def serialize(self):
         return {
@@ -42,17 +40,26 @@ class Profiles(db.Model):
         }
     
 
+class Pictures(db.Model):
+    __tablename__ = 'pictures'
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    date_created = db.Column(db.Date, default=datetime.now())
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "date_created": self.date_created
+        }
 
 # class Tournaments(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     date_created = db.Column(db.DateTime, default=datetime.now)
+#     date_created = db.Column(db.Date, default=datetime.date())
 
 #     name = db.Column(db.String(120))
-#     results = db.Column(db.String(1000))
-#     start_date = db.Column(db.DateTime)
-#     end_date = db.Column(db.DateTime)
+#     start_date = db.Column(db.Date)
+#     end_date = db.Column(db.Date)
 
-#     players = db.relationship('Users', lazy=True)
+#     flights = db.relationship('Flights', backref='tournament', lazy=True)
 
 #     def __repr__(self):
 #         return f'<Tournament {self.name}>'
@@ -65,6 +72,23 @@ class Profiles(db.Model):
 #             "schedule": self.schedule,
 #             "players": list(map(lambda e: e.serialize(), self.players))
 #         }
+
+
+# class Flights(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+
+#  = db.Table('tags',
+#     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+#     db.Column('page_id', db.Integer, db.ForeignKey('page.id'), primary_key=True)
+# )
+
+# class Page(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     tags = db.relationship('Tag', secondary=tags, lazy='subquery',
+#         backref=db.backref('pages', lazy=True))
+
+# class Tag(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
 
 
 # class Swaps(db.Model):

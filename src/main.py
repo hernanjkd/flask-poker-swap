@@ -6,7 +6,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from flask_jwt_simple import JWTManager, jwt_required, create_jwt, get_jwt_identity
 from utils import APIException, generate_sitemap, verify_json
-from models import db, Users, Profiles
+from models import db, Users, Profiles, Pictures
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -53,17 +53,17 @@ def login():
 @app.route('/users', methods=['GET','POST','PUT'])
 def user():
     
-    user = Users(
-        email = "ikelkwj32@gmail.com",
-        password = hash("super secret password")
-    )
-    db.session.add(user)
-    db.session.add(Profiles(
-        first_name = "Osvaldo",
-        last_name = "Ratata",
-        user = user
-    ))
-    db.session.commit()
+    # user = Users(
+    #     email = "ikelkwj32@gmail.com",
+    #     password = hash("super secret password")
+    # )
+    # db.session.add(user)
+    # db.session.add(Profiles(
+    #     first_name = "Osvaldo",
+    #     last_name = "Ratata",
+    #     user = user
+    # ))
+    # db.session.commit()
 
     if request.method == 'PUT':
         user = Users.query.get(id)
@@ -73,9 +73,10 @@ def user():
 
     
 
-    prof = Profiles.query.all()
-    prof = list(map(lambda x: x.serialize(), prof))
-    return jsonify(prof)
+    # pics = list(map(lambda x: x.serialize(), Pictures.query.all()))
+    prof = list(map(lambda x: x.serialize(), Profiles.query.all()))
+    users = list(map(lambda x: x.serialize(), Users.query.all()))
+    return jsonify(prof + users)
 
 
 #############################################################################
