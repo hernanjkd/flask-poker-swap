@@ -11,6 +11,9 @@ class Users(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=True, nullable=False)
 
+    def __repr__(self):
+        return f'<Users {self.email}>'
+
     def serialize(self):
         return {
             "id": self.id,
@@ -30,6 +33,9 @@ class Profiles(db.Model):
 
     user = db.relationship('Users', backref='profile', uselist=False)
     
+    def __repr__(self):
+        return f'<Profiles {self.first_name} {self.last_name}>'
+
     def serialize(self):
         return {
             "id": self.id,
@@ -39,6 +45,7 @@ class Profiles(db.Model):
             "email": self.user.email
         }
     
+
 
 class Pictures(db.Model):
     __tablename__ = 'pictures'
@@ -51,33 +58,59 @@ class Pictures(db.Model):
             "date_created": self.date_created
         }
 
-# class Tournaments(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     date_created = db.Column(db.Date, default=datetime.date())
-
-#     name = db.Column(db.String(120))
-#     start_date = db.Column(db.Date)
-#     end_date = db.Column(db.Date)
-
-#     flights = db.relationship('Flights', backref='tournament', lazy=True)
-
-#     def __repr__(self):
-#         return f'<Tournament {self.name}>'
-
-#     def serialize(self):
-#         return {
-#             "id": self.id,
-#             "name": self.name,
-#             "results": self.results,
-#             "schedule": self.schedule,
-#             "players": list(map(lambda e: e.serialize(), self.players))
-#         }
 
 
-# class Flights(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
+class Tournaments(db.Model):
+    __tablename__ = 'tournaments'
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.Date, default=datetime.now())
 
-#  = db.Table('tags',
+    name = db.Column(db.String(120))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+
+    flights = db.relationship('Flights', back_populates='tournament')
+
+    def __repr__(self):
+        return f'<Tournament {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "date_created": self.date_created,
+            "name": self.name,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "flights": list(map(lambda e: e.serialize(), self.flights))
+        }
+
+
+
+class Flights(db.Model):
+    __tablename__ = 'flights'
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.Date, default=datetime.now())
+
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+
+    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
+    tournament = db.relationship('Tournaments', back_populates='flights')
+
+    def __repr__(self):
+        return f'<Flights {self.tournament.name} {self.start_date} - {self.end_date}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "date_created": self.date_created,
+            "start_date": self.start_date,
+            "end_date": self.end_date
+        }
+
+
+
+# tags = db.Table('tags',
 #     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
 #     db.Column('page_id', db.Integer, db.ForeignKey('page.id'), primary_key=True)
 # )
